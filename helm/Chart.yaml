@@ -1,5 +1,5 @@
 apiVersion: v2
-name: my-full-stack-app
+name: aff
 description: Helm chart for deploying a Django backend and React frontend application on K3s with Traefik ingress.
 version: 0.1.0
 appVersion: "1.0"
