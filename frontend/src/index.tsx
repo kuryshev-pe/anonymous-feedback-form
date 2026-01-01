@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/browser";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-Sentry.init({ dsn: "https://5ccfc96a09ac40259b0987f6aa6f7ba8@sentry.vsdg.ru/2" });
+Sentry.init({ dsn: "https://5ccfc96a09ac40259b0987f6aa6f7ba8@sentry.vsdg.ru/5" });
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
