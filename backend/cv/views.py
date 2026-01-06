@@ -8,3 +8,7 @@ from django.shortcuts import render
 def message(request):
     r = randint(0,10000)+1
     return HttpResponse('{"message": "Test'+str(r)+'!"}')
+
+
+def trigger_error(request):
+    division_by_zero = 1 / 0

@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from cv.views import message
+from cv.views import message, trigger_error
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/message', message),
+    path('api/error', trigger_error),
 ]
