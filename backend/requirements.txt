@@ -10,7 +10,7 @@ jedi==0.19.2
 packaging==25.0
 parso==0.8.4
 pluggy==1.6.0
-psycopg==3.3.2
+psycopg2-binary==2.9.11
 pygments==2.19.1
 pytest==8.4.0
 python-lsp-jsonrpc==1.1.2
