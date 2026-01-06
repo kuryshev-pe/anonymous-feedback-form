@@ -1,19 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-# Name the Ingress resource
-  name: aff-ingress
+  name: {{ .Values.global.prefix }}-ingress
   annotations:
     kubernetes.io/ingress.class: traefik
-    cert-manager.io/cluster-issuer: letsencrypt-{{ .Values.global.prefix }}-certificate
+    cert-manager.io/cluster-issuer: letsencrypt-dswz-certificate
 spec:
   tls:
     - secretName: {{ .Values.global.prefix }}.letsencrypt.key.tls
       hosts:
         - {{ .Values.ingress.host }}
-  # Create Ingress routing rules
   rules:
-  # Replace with your domain name
   - host: {{ .Values.ingress.host }}
     http:
       paths:

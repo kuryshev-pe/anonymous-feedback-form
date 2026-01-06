@@ -5,7 +5,7 @@ backend:
   replicaCount: 2
   image:
     repository: gitlab.cleverbots.ru:4567/edu/aaf/backend
-    tag: 0.0.1
+    tag: 0.0.7
     pullPolicy: IfNotPresent
   containerPort: 8000
   service:
@@ -25,7 +25,7 @@ frontend:
   replicaCount: 2
   image:
     repository: gitlab.cleverbots.ru:4567/edu/aaf/frontend
-    tag: 0.0.1
+    tag: 0.0.14
     pullPolicy: IfNotPresent
   containerPort: 80
   service:
@@ -44,7 +44,7 @@ frontend:
 ingress:
   enabled: true
   className: traefik
-  host: aff.dswz.ru  # Укажите ваш домен
+  host: aff.dswz.ru
   annotations:
     traefik.ingress.kubernetes.io/router.middlewares: default-strip-api-prefix@kubernetescrd
   path: / 
@@ -53,7 +53,7 @@ ingress:
     letsEncrypt:
       enabled: true
       email: peter@kurishev.ru  # Email для Let's Encrypt
-      production: false  # true для продакшена, false для теста (staging)
+      production: true  # true для продакшена, false для теста (staging)
     
 
 middleware:
