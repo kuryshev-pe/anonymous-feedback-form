@@ -1,5 +1,5 @@
 """
-URL configuration for cvbe project.
+URL configuration for AFF project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.2/topics/http/urls/
@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from cv.views import message, trigger_error
+from feedback.views import message, trigger_error, save_feedback
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/message', message),
     path('api/error', trigger_error),
+    path('api/feedback', save_feedback),
 ]
