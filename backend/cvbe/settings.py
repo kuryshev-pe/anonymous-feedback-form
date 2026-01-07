@@ -81,14 +81,27 @@ WSGI_APPLICATION = 'cvbe.wsgi.application'
 #     }
 # }
 
+import os
+from django.core.exceptions import ImproperlyConfigured
+
+def get_env_variable(var_name, default=None):
+    """Получить переменную окружения или вернуть исключение."""
+    try:
+        return os.environ[var_name]
+    except KeyError:
+        if default is not None:
+            return default
+        error_msg = f"Set the {var_name} environment variable"
+        raise ImproperlyConfigured(error_msg)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'aff',
-        'USER': 'aff',
-        'PASSWORD': 'mo6zo6mu',
-        'HOST': '10.43.97.247',  # or your database host
-        'PORT': '5432',       # default PostgreSQL port
+        'NAME': get_env_variable('DB_NAME'),
+        'USER': get_env_variable('DB_USER'),
+        'PASSWORD': get_env_variable('DB_PASSWORD'),
+        'HOST': get_env_variable('DB_HOST'),
+        'PORT': get_env_variable('DB_PORT'),
     }
 }
 
