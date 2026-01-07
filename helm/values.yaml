@@ -5,7 +5,7 @@ backend:
   replicaCount: 2
   image:
     repository: gitlab.cleverbots.ru:4567/edu/aaf/backend
-    tag: 0.0.7
+    tag: 0.0.10
     pullPolicy: IfNotPresent
   containerPort: 8000
   service:
