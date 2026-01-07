@@ -16,16 +16,13 @@ import {
   Snackbar,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 // Типы для формы
 interface FeedbackFormData {
-  name: string;
   department: string;
   email: string;
   category: string;
   message: string;
-  attachment: File | null;
 }
 
 interface FormStatus {
@@ -73,12 +70,10 @@ const DEPARTMENTS: Array<{ value: DepartmentType; label: string }> = [
 const FeedbackForm: React.FC = () => {
   // Состояние формы
   const [formData, setFormData] = useState<FeedbackFormData>({
-    name: '',
     department: '',
     email: '',
     category: '',
-    message: '',
-    attachment: null,
+    message: ''
   });
 
   // Статус отправки
@@ -108,19 +103,9 @@ const FeedbackForm: React.FC = () => {
     }));
   };
 
-  // Обработчик загрузки файла
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData((prev) => ({
-        ...prev,
-        attachment: e.target.files![0],
-      }));
-    }
-  };
-
   // Валидация формы
   const validateForm = (): boolean => {
-    const { name, email, category, message } = formData;
+    const { email, category, message } = formData;
     
     if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
       setStatus((prev) => ({ ...prev, error: 'Введите корректный email' }));
@@ -155,24 +140,22 @@ const FeedbackForm: React.FC = () => {
     
     try {
       // Имитация API-запроса
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // await new Promise((resolve) => setTimeout(resolve, 1500));
       
       // Здесь обычно будет реальный запрос:
-      // const response = await fetch('/api/feedback', {
-      //   method: 'POST',
-      //   body: JSON.stringify(formData),
-      // });
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+      });
       
       setStatus({ submitting: false, success: true, error: '' });
       
       // Сброс формы
       setFormData({
-        name: '',
         department: '',
         email: '',
         category: '',
-        message: '',
-        attachment: null,
+        message: ''
       });
       
 } catch (error) {
