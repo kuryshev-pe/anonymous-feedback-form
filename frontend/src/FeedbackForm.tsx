@@ -142,7 +142,7 @@ const FeedbackForm: React.FC = () => {
       // Имитация API-запроса
       // await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      const response = await fetch('http://localhost:8000/api/feedback', {
+      const response = await fetch('/api/feedback', {
         method: 'POST',
         body: JSON.stringify(formData),
       });
