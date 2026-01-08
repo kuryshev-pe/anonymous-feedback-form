@@ -141,12 +141,15 @@ const FeedbackForm: React.FC = () => {
     try {
       // Имитация API-запроса
       // await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // Здесь обычно будет реальный запрос:
-      const response = await fetch('/api/feedback', {
+
+      const response = await fetch('http://localhost:8000/api/feedback', {
         method: 'POST',
         body: JSON.stringify(formData),
       });
+
+      if (!response.ok) {
+	throw new Error("Проблема отправки формы" + response.status);
+      }
       
       setStatus({ submitting: false, success: true, error: '' });
       
@@ -158,7 +161,7 @@ const FeedbackForm: React.FC = () => {
         message: ''
       });
       
-} catch (error) {
+    } catch (error) {
       setStatus({ 
         submitting: false, 
         success: false, 

@@ -1,7 +1,10 @@
+import json
 from random import randint
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+
+from feedback.models import FeedbackInfo
 
 # Create your views here.
 
@@ -16,10 +19,18 @@ def trigger_error(request):
 
 def save_feedback(request):
     if request.method != 'POST':
-        print("Not POST")
-        return JsonResponse({"status": "ok"})
+        return JsonResponse({"status": "nok"}, status=400)
     else:
-        print("POST")
-        print(request.json)
+
+        data = json.loads(request.body)
+        info = FeedbackInfo()
+        info.department = data["department"]
+        info.category = data["category"]
+        if "email" in data:
+            info.email = data["email"]
+        info.message = data["message"]
+
+        info.save()
+        
         return JsonResponse({"status": "ok"})
         
