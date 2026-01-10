@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-yrm@y*-^g7x62ixx03&^z64$69q-bc8i0v!tm%dw7&f&5p@fq='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 #FIXME: bad case, there shoulld be POD ip for health / liveness probes
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['aff.dswz.ru']
 #ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 
@@ -97,22 +97,14 @@ def get_env_variable(var_name, default=None):
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': get_env_variable('DB_NAME'),
+        'USER': get_env_variable('DB_USER'),
+        'PASSWORD': get_env_variable('DB_PASSWORD'),
+        'HOST': get_env_variable('DB_HOST'),
+        'PORT': get_env_variable('DB_PORT'),
     }
 }
-
-    
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': get_env_variable('DB_NAME'),
-#         'USER': get_env_variable('DB_USER'),
-#         'PASSWORD': get_env_variable('DB_PASSWORD'),
-#         'HOST': get_env_variable('DB_HOST'),
-#         'PORT': get_env_variable('DB_PORT'),
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -138,7 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
@@ -149,18 +141,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# import sentry_sdk
-# from sentry_sdk.integrations.django import DjangoIntegration
+CSRF_TRUSTED_ORIGINS = ['https://aff.dswz.ru']
 
-# sentry_sdk.init(
-#     dsn="https://a1fd37d4bd4546248636959f7756c2a0@sentry.vsdg.ru/5",
-#     integrations=[DjangoIntegration()],
-#     auto_session_tracking=False,
-#     traces_sample_rate=0
-# )
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(
+    dsn="https://a1fd37d4bd4546248636959f7756c2a0@sentry.vsdg.ru/5",
+    integrations=[DjangoIntegration()],
+    auto_session_tracking=False,
+    traces_sample_rate=0
+)
