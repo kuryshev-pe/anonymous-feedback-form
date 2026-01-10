@@ -128,6 +128,20 @@ const FeedbackForm: React.FC = () => {
     return true;
   };
 
+  // Функция для получения CSRF токена из cookies
+  const getCookie = (name: string): string | null => {
+    if (typeof document !== 'undefined') {
+      const cookieValue = document.cookie.split(';').find(cookie =>
+        cookie.trim().startsWith(name + '=')
+      );
+
+      if (cookieValue) {
+        return decodeURIComponent(cookieValue.split('=')[1]);
+      }
+    }
+    return null;
+  };
+
   // Обработчик отправки формы
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -139,11 +153,14 @@ const FeedbackForm: React.FC = () => {
     setStatus({ submitting: true, success: false, error: '' });
     
     try {
-      // Имитация API-запроса
-      // await new Promise((resolve) => setTimeout(resolve, 1500));
+      const csrftoken = getCookie('csrftoken');
 
       const response = await fetch('/api/feedback', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken || '',
+        },
         body: JSON.stringify(formData),
       });
 
