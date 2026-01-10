@@ -6,7 +6,7 @@ class FeedbackInfo(models.Model):
     email = models.EmailField(null=True)
     category = models.CharField(max_length=16)
     message = models.TextField()
-    submission_date = models.DateTimeField(default=datetime.now())
+    submission_date = models.DateTimeField(default=datetime.now)
     
 
     def __str__(self):
