@@ -16,6 +16,7 @@ import {
   Snackbar,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import { resolve } from 'dns';
 
 // Типы для формы
 interface FeedbackFormData {
@@ -128,64 +129,91 @@ const FeedbackForm: React.FC = () => {
     return true;
   };
 
-  // Функция для получения CSRF токена из cookies
-  const getCookie = (name: string): string | null => {
-    if (typeof document !== 'undefined') {
-      const cookieValue = document.cookie.split(';').find(cookie =>
-        cookie.trim().startsWith(name + '=')
-      );
+// Функция для получения CSRF токена из cookies
+   const getCookie = (name: string): string | null => {
+     if (typeof document !== 'undefined') {
+       const cookieValue = document.cookie.split(';').find(cookie =>
+         cookie.trim().startsWith(name + '=')
+       );
 
-      if (cookieValue) {
-        return decodeURIComponent(cookieValue.split('=')[1]);
-      }
-    }
-    return null;
-  };
+       if (cookieValue) {
+         return decodeURIComponent(cookieValue.split('=')[1]);
+       }
+     }
+     return null;
+   };
 
-  // Обработчик отправки формы
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    setStatus({ submitting: true, success: false, error: '' });
-    
-    try {
-      const csrftoken = getCookie('csrftoken');
+   // Функция для получения CSRF токена с сервера
+   const fetchCsrfToken = async (): Promise<string | null> => {
+     try {
+       const response = await fetch('/api/message', {
+         method: 'GET',
+         credentials: 'include', // Важно для получения cookies
+       });
+       
+       if (!response.ok) {
+         throw new Error(`Failed to fetch CSRF token: ${response.status}`);
+       }
+       
+       // Пытаемся извлечь токен из заголовков или ответа
+       const data = await response.json()
 
-      const response = await fetch('/api/feedback', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrftoken || '',
-        },
-        body: JSON.stringify(formData),
-      });
+       return data.CSRFToken;
+     } catch (error) {
+       console.error('Error fetching CSRF token:', error);
+       return null;
+     }
+   };
 
-      if (!response.ok) {
-	throw new Error("Проблема отправки формы" + response.status);
-      }
-      
-      setStatus({ submitting: false, success: true, error: '' });
-      
-      // Сброс формы
-      setFormData({
-        department: '',
-        email: '',
-        category: '',
-        message: ''
-      });
-      
-    } catch (error) {
-      setStatus({ 
-        submitting: false, 
-        success: false, 
-        error: 'Произошла ошибка при отправке формы' 
-      });
-    }
-  };
+// Обработчик отправки формы
+   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+     e.preventDefault();
+     
+     if (!validateForm()) {
+       return;
+     }
+     
+     setStatus({ submitting: true, success: false, error: '' });
+     
+     try {
+       let csrftoken = getCookie('csrftoken');
+       
+       // Если токена нет в cookies, получаем его с сервера
+       if (!csrftoken) {
+         csrftoken = await fetchCsrfToken();
+       }
+
+       const response = await fetch('/api/feedback', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json',
+           'X-CSRFToken': csrftoken || '',
+         },
+         body: JSON.stringify(formData),
+       });
+
+       if (!response.ok) {
+ 	throw new Error("Проблема отправки формы" + response.status);
+       }
+       
+       setStatus({ submitting: false, success: true, error: '' });
+       
+       // Сброс формы
+       setFormData({
+         department: '',
+         email: '',
+         category: '',
+         message: ''
+       });
+       
+     } catch (error) {
+       setStatus({ 
+         submitting: false, 
+         success: false, 
+         error: 'Произошла ошибка при отправке формы' 
+       });
+     }
+   };
 
   // Закрытие уведомления
   const handleCloseSnackbar = () => {

@@ -1,16 +1,16 @@
 import json
-from random import randint
 
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 
 from feedback.models import FeedbackInfo
 
-# Create your views here.
-
 def message(request):
-    r = randint(0,10000)+1
-    return HttpResponse('{"message": "Test'+str(r)+'!"}')
+    if request.method == 'GET':
+        csrf_token = get_token(request)
+        response = JsonResponse({'CSRFToken': csrf_token})
+        response.set_cookie('csrftoken', csrf_token)
+        return response    
 
 
 def trigger_error(request):

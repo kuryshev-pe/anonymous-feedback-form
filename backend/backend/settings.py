@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-yrm@y*-^g7x62ixx03&^z64$69q-bc8i0v!tm%dw7&f&5p@fq=
 DEBUG = False
 
 #FIXME: bad case, there shoulld be POD ip for health / liveness probes
-ALLOWED_HOSTS = ['aff.dswz.ru']
+ALLOWED_HOSTS = ['aff.dswz.ru', os.getenv('POD_IP_HOST')]
 #ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 
 

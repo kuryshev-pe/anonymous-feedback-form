@@ -35,7 +35,10 @@ spec:
             initialDelaySeconds: {{ .Values.backend.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.backend.livenessProbe.periodSeconds }}
           env:
-          # Переменные из secret
+          - name: POD_IP_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           - name: DB_PASSWORD
             valueFrom:
               secretKeyRef:
