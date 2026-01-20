@@ -1,19 +1,25 @@
+# Multi-stage build for frontend
+FROM node:18-alpine AS build
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install && npm ci
+
+# Copy source code and build
+COPY . .
+RUN npm run build
+
+# Production stage
 FROM nginx:1.23-alpine
-COPY build /usr/share/nginx/html
 
-# FROM node:18-alpine
-# #FROM node:18-alpine as build
-# WORKDIR /app
-# COPY package*.json ./
-# # RUN npm ci
-# COPY . .
-# # RUN npm run build
-# RUN npm install
-# #ENTRYPOINT ["npm", "run", "start"]
-# CMD ["npm", "run", "start"]
+# Copy built files from build stage
+COPY --from=build /app/build /usr/share/nginx/html
 
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
-#FROM nginx:alpine
-#COPY --from=build /app/build /usr/share/nginx/html
-#COPY nginx.conf /etc/nginx/conf.d/default.conf
-#EXPOSE 80
+# Expose port
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
